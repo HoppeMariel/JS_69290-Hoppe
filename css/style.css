@@ -19,6 +19,16 @@ body {
   background-color: #506b6ba3;
 }
 
+.title {
+  width: 100%;
+  background-color:#3b9e99;
+  color: black;
+  text-align: center;
+  padding: 20px 0;
+  position: relative;
+  z-index: 1;
+}
+
 .menu ul li {
   margin: 0;
 }
@@ -45,39 +55,58 @@ body {
 
 
 .sidebar {
-  background-color: #3b9e99;
+  background-color: #9dbbb9;
   padding: 20px;
   flex: 1;
-  min-width: 250px;
+  min-width: 50%;
+  text-align: center;
 }
 
 .sidebar .slogan {
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  padding-bottom: 0;
 }
 
-.sidebar .descripcion {
+.sidebar .description {
   margin-bottom: 15px;
 }
 
-.sidebar img {
-  width: 100%;
+.sidebar img.barebears {
+  width: 80%;
   height: auto;
   display: block;
+  margin: 0 auto;
 }
 
 .main-content {
   background-color: #9dbbb9;
   padding: 20px;
   flex: 2;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .main-content h1 {
   margin-bottom: 10px;
+  padding: 20px;
 }
 
 ul{
   list-style-type: none;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%; 
+}
+
+th, td {
+  border: 1px solid #3b9e99;
+  padding: 8px;
+  font-size: 0.9em;
 }
 
 footer {
@@ -89,7 +118,8 @@ footer {
 }
 
 .footer-contact p {
-  margin-bottom: 5px;
+  margin: 0;
+  padding: 0;
 }
 
 .social-icons {
@@ -97,7 +127,8 @@ footer {
 }
 
 .social-icons a {
-  margin: 0 10px;
+  margin: 0;
+  padding: 10px;
   color: #fff;
   text-decoration: none;
   transition: color 0.3s;
@@ -105,6 +136,11 @@ footer {
 
 .social-icons a:hover {
   color: #ddd;
+}
+
+.footer-info {
+  margin: 0;
+  padding: 0;
 }
 
 @media (max-width: 768px) {
@@ -124,4 +160,19 @@ footer {
   footer {
     font-size: 0.8em;
   }
+}
+
+#simular {
+  margin-top: 15px;
+  padding: 10px 20px;
+  border: none;
+  background-color: #3b9e99;
+  color: white;
+  font-size: 1em;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#simular:hover {
+  background-color: #347f7b;
 }

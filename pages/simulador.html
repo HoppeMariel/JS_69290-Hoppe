@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Simulador PETMED</title>
+  <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../css/style.css">
+  <script defer src="../js/simulador.js"></script>
+</head>
+<body>
+  <header>
+    <nav class="menu">
+      <ul>
+        <li><a class="nav-link" href="../index.html">Inicio</a></li>
+        <li><a class="nav-link" href="./simulador.html">Planes</a></li>
+        <li><a class="nav-link" href="./compras.html">Compras</a></li>
+        <li><a class="nav-link" href="./novedades.html">Novedades</a></li>
+        <li><a class="nav-link" href="./adopciones.html">Adopciones</a></li>
+      </ul>
+    </nav>
+  </header>
+  <div class="title">
+    <h1>Bienvenidos al simulador de planes de PETMED</h1>
+  </div>
+  <div class="container">
+    <aside class="sidebar">
+      <h4>Te detallamos las prestaciones de cada plan:</h4>
+      <div id="prestaciones"></div><table id="tablaPrestaciones">
+        <thead>
+          <tr>
+            <th>Prestaciones sin cargo por año</th>
+            <th>Pardo 🐻</th>
+            <th>Polar 🐻‍❄️</th>
+            <th>Panda 🐼</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>      
+    </aside>
+    <main class="main-content">
+      <h4>Seleccioná la cantidad de mascotas que querés afiliar:</h4>
+      <table id="tablaDatosSimulador">
+        <thead>
+          <tr>
+            <th>Plan</th>
+            <th>Valor</th>
+            <th>Cantidad de mascotas</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+      
+      <form id="formulario">
+        <!--Falta dar formato, no llegué-->
+        <h4>Ingrese los datos del propietario de las mascotas:</h4>
+        <label for="nombre">Nombre</label>
+        <input type="text" id="nombre" required>
+        <label for="apellido">Apellido</label>
+        <input type="text" id="apellido" required>
+        <label for="documento">Documento</label>
+        <input type="text" id="documento" required>
+        <label for="domicilio">Domicilio</label>
+        <input type="text" id="domicilio" required>
+        <label for="telefono">Teléfono</label>
+        <input type="text" id="telefono" required>
+        <label for="email">E-mail</label>
+        <input type="email" id="email" required>
+        <button type="button" id="simular">Simular</button>
+      </form>
+      <!--Falta dar formato, no llegué-->
+      <div id="resultado"></div>
+    </main>
+  </div>
+  <footer>
+    <div class="footer-contact">
+      <p>Avenida Nerita Neroli 3210, Buenos Aires, Argentina</p>
+      <p>Tel: 11-5678-4321</p>
+      <div class="social-icons">
+        <a href="#" class="icon whatsapp">WhatsApp</a>
+        <a href="#" class="icon instagram">Instagram</a>
+        <a href="#" class="icon twitter">Twitter</a>
+      </div>
+    </div>
+    <div class="footer-info">
+      <p>Todos los derechos reservados - 2025</p>
+    </div>
+  </footer>
+</body>
+</html>
