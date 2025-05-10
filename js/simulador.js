@@ -1,11 +1,42 @@
 const prestaciones = [
-  { plan: 'Plan Pardo 🐻', consultas: '2', controles: '6', urgencias: '2', estudios: '2', internaciones: '1', descuentoMedicacion: '30%', descuentoArticulos: '10%' },
-  { plan: 'Plan Polar 🐻‍❄️', consultas: '4', controles: '12', urgencias: '4', estudios: '3', internaciones: '1', descuentoMedicacion: '30%', descuentoArticulos: '10%' },
-  { plan: 'Plan Panda 🐼', consultas: 'Sin tope', controles: 'Sin tope', urgencias: 'Sin tope', estudios: '6', internaciones: '1', descuentoMedicacion: '30%', descuentoArticulos: '10%' }
+  {
+    plan: 'Plan Pardo 🐻',
+    consultas: '2',
+    controles: '6',
+    urgencias: '2',
+    estudios: '2',
+    internaciones: '1',
+    descuentoMedicacion: '30%',
+    descuentoArticulos: '10%',
+  },
+  {
+    plan: 'Plan Polar 🐻‍❄️',
+    consultas: '4',
+    controles: '12',
+    urgencias: '4',
+    estudios: '3',
+    internaciones: '1',
+    descuentoMedicacion: '30%',
+    descuentoArticulos: '10%',
+  },
+  {
+    plan: 'Plan Panda 🐼',
+    consultas: 'Sin tope',
+    controles: 'Sin tope',
+    urgencias: 'Sin tope',
+    estudios: '6',
+    internaciones: '1',
+    descuentoMedicacion: '30%',
+    descuentoArticulos: '10%',
+  },
 ];
 
 const precios = [20000, 30000, 40000];
 const planes = ['Pardo 🐻', 'Polar 🐻‍❄️', 'Panda 🐼'];
+
+function formatearPrecio(valor) {
+  return `$${valor.toLocaleString('es-AR')}`;
+}
 
 function cargarTablaPrestaciones() {
   const cuerpo = document.querySelector('#tablaPrestaciones tbody');
@@ -18,7 +49,7 @@ function cargarTablaPrestaciones() {
     { key: 'estudios', label: 'Estudios de baja complejidad: Laboratorio, ecografía, radiología' },
     { key: 'internaciones', label: 'Internaciones' },
     { key: 'descuentoMedicacion', label: 'Descuento en medicación ambulatoria' },
-    { key: 'descuentoArticulos', label: 'Descuento en artículos de nuestra tienda' }
+    { key: 'descuentoArticulos', label: 'Descuento en artículos de nuestra tienda' },
   ];
 
   campos.forEach(campo => {
@@ -49,7 +80,7 @@ function cargarTablaPlanes() {
     fila.appendChild(celdaPlan);
 
     const celdaPrecio = document.createElement('td');
-    celdaPrecio.textContent = `$${precios[i]}`;
+    celdaPrecio.textContent = formatearPrecio(precios[i]);
     fila.appendChild(celdaPrecio);
 
     const celdaCantidad = document.createElement('td');
@@ -70,12 +101,54 @@ function cambiarCantidad(plan, delta) {
   let nuevaCantidad = cantidadActual + delta;
 
   if (nuevaCantidad < 0) nuevaCantidad = 0;
-
   spanCantidad.textContent = nuevaCantidad;
 }
 
+function simularPlan(precioBase, cantidad, totalMascotas) {
+  let descuento = 0;
+  if (totalMascotas === 2) descuento = 0.10;
+  else if (totalMascotas >= 3) descuento = 0.20;
+
+  const total = precioBase * cantidad;
+  const totalConDescuento = total - total * descuento;
+
+  return {
+    totalSinDescuento: total,
+    descuentoAplicado: descuento,
+    totalFinal: totalConDescuento,
+  };
+}
+
 document.getElementById('simular').addEventListener('click', () => {
-  const resultadoDiv = document.getElementById('resultado');
+  const cuerpoResultado = document.querySelector('#resultado tbody');
+  cuerpoResultado.innerHTML = '';
+
+  let totalMascotas = 0;
+  const cantidadesPorPlan = planes.map(plan => {
+    const cantidad = parseInt(document.getElementById(`${plan}-cantidad`).textContent);
+    totalMascotas += cantidad;
+    return cantidad;
+  });
+
+  planes.forEach((plan, index) => {
+    const cantidad = cantidadesPorPlan[index];
+    if (cantidad > 0) {
+      const { totalSinDescuento, descuentoAplicado, totalFinal } = simularPlan(precios[index], cantidad, totalMascotas);
+
+      const fila = document.createElement('tr');
+      fila.innerHTML = `
+        <td>${plan}</td>
+        <td>${formatearPrecio(precios[index])}</td>
+        <td>${cantidad}</td>
+        <td>${(descuentoAplicado * 100).toFixed(0)}%</td>
+        <td>${formatearPrecio(totalFinal)}</td>
+      `;
+      cuerpoResultado.appendChild(fila);
+    }
+  });
+});
+
+document.getElementById('contratar').addEventListener('click', () => {
   const datos = {
     nombre: document.getElementById('nombre').value,
     apellido: document.getElementById('apellido').value,
@@ -84,42 +157,8 @@ document.getElementById('simular').addEventListener('click', () => {
     telefono: document.getElementById('telefono').value,
     email: document.getElementById('email').value,
   };
-
   localStorage.setItem('datosPropietario', JSON.stringify(datos));
-
-  let resultado = 'Plan\tValor\tCantidad de mascotas\tDescuento\tTotal del plan<br>';
-
-  planes.forEach((plan, index) => {
-    const cantidad = parseInt(document.getElementById(`${plan}-cantidad`).innerText);
-    const { totalSinDescuento, descuentoAplicado, totalFinal } = simularPlan(plan, cantidad);
-    resultado += `${plan}\t$${precios[index]}\t${cantidad}\t${descuentoAplicado * 100}%\t$${totalFinal.toFixed(2)}<br>`;
-  });
-
-  resultadoDiv.innerHTML = resultado;
 });
-
-function simularPlan(plan, cantidad) {
-  let indicePlan = planes.indexOf(plan);
-  let precioBase = precios[indicePlan];
-  let descuento = 0;
-
-  if (cantidad === 1) {
-    descuento = 0.00;
-  } else if (cantidad === 2) {
-    descuento = 0.10;
-  } else if (cantidad >= 3) {
-    descuento = 0.20;
-  }
-
-  let total = precioBase * cantidad;
-  let totalConDescuento = total - (total * descuento);
-
-  return {
-    totalSinDescuento: total,
-    descuentoAplicado: descuento,
-    totalFinal: totalConDescuento
-  };
-}
 
 document.addEventListener('DOMContentLoaded', () => {
   cargarTablaPrestaciones();
