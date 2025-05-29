@@ -1,38 +1,5 @@
-const prestaciones = [
-  {
-    plan: 'Plan Pardo 🐻',
-    consultas: '2',
-    controles: '6',
-    urgencias: '2',
-    estudios: '2',
-    internaciones: '1',
-    descuentoMedicacion: '30%',
-    descuentoArticulos: '10%',
-  },
-  {
-    plan: 'Plan Polar 🐻‍❄️',
-    consultas: '4',
-    controles: '12',
-    urgencias: '4',
-    estudios: '3',
-    internaciones: '1',
-    descuentoMedicacion: '30%',
-    descuentoArticulos: '10%',
-  },
-  {
-    plan: 'Plan Panda 🐼',
-    consultas: 'Sin tope',
-    controles: 'Sin tope',
-    urgencias: 'Sin tope',
-    estudios: '6',
-    internaciones: '1',
-    descuentoMedicacion: '30%',
-    descuentoArticulos: '10%',
-  },
-];
-
-const precios = [20000, 30000, 40000];
-const planes = ['Pardo 🐻', 'Polar 🐻‍❄️', 'Panda 🐼'];
+let prestaciones = [];
+let planes = [];
 
 function formatearPrecio(valor) {
   return `$${valor.toLocaleString('es-AR')}`;
@@ -72,36 +39,43 @@ function cargarTablaPlanes() {
   const cuerpo = document.querySelector('#tablaDatosSimulador tbody');
   cuerpo.innerHTML = '';
 
-  for (let i = 0; i < planes.length; i++) {
+  const cantidadesGuardadas = JSON.parse(localStorage.getItem('cantidadesPlanes')) || {};
+
+  planes.forEach((item) => {
     const fila = document.createElement('tr');
 
     const celdaPlan = document.createElement('td');
-    celdaPlan.textContent = planes[i];
+    celdaPlan.textContent = item.plan;
     fila.appendChild(celdaPlan);
 
     const celdaPrecio = document.createElement('td');
-    celdaPrecio.textContent = formatearPrecio(precios[i]);
+    celdaPrecio.textContent = formatearPrecio(item.precio);
     fila.appendChild(celdaPrecio);
+
+    const cantidadActual = cantidadesGuardadas[item.plan] || 0;
 
     const celdaCantidad = document.createElement('td');
     celdaCantidad.innerHTML = `
-      <button onclick="cambiarCantidad('${planes[i]}', -1)">-</button>
-      <span id="${planes[i]}-cantidad">0</span>
-      <button onclick="cambiarCantidad('${planes[i]}', 1)">+</button>
+      <button onclick="cambiarCantidad('${item.plan}', -1)">-</button>
+      <span id="${item.plan}-cantidad">${cantidadActual}</span>
+      <button onclick="cambiarCantidad('${item.plan}', 1)">+</button>
     `;
     fila.appendChild(celdaCantidad);
 
     cuerpo.appendChild(fila);
-  }
+  });
 }
 
 function cambiarCantidad(plan, delta) {
   const spanCantidad = document.getElementById(`${plan}-cantidad`);
   let cantidadActual = parseInt(spanCantidad.textContent);
   let nuevaCantidad = cantidadActual + delta;
-
   if (nuevaCantidad < 0) nuevaCantidad = 0;
   spanCantidad.textContent = nuevaCantidad;
+
+  const cantidadesGuardadas = JSON.parse(localStorage.getItem('cantidadesPlanes')) || {};
+  cantidadesGuardadas[plan] = nuevaCantidad;
+  localStorage.setItem('cantidadesPlanes', JSON.stringify(cantidadesGuardadas));
 }
 
 function simularPlan(precioBase, cantidad, totalMascotas) {
@@ -124,21 +98,21 @@ document.getElementById('simular').addEventListener('click', () => {
   cuerpoResultado.innerHTML = '';
 
   let totalMascotas = 0;
-  const cantidadesPorPlan = planes.map(plan => {
-    const cantidad = parseInt(document.getElementById(`${plan}-cantidad`).textContent);
+  const cantidadesPorPlan = planes.map(item => {
+    const cantidad = parseInt(document.getElementById(`${item.plan}-cantidad`).textContent);
     totalMascotas += cantidad;
     return cantidad;
   });
 
-  planes.forEach((plan, index) => {
+  planes.forEach((item, index) => {
     const cantidad = cantidadesPorPlan[index];
     if (cantidad > 0) {
-      const { totalSinDescuento, descuentoAplicado, totalFinal } = simularPlan(precios[index], cantidad, totalMascotas);
+      const { totalSinDescuento, descuentoAplicado, totalFinal } = simularPlan(item.precio, cantidad, totalMascotas);
 
       const fila = document.createElement('tr');
       fila.innerHTML = `
-        <td>${plan}</td>
-        <td>${formatearPrecio(precios[index])}</td>
+        <td>${item.plan}</td>
+        <td>${formatearPrecio(item.precio)}</td>
         <td>${cantidad}</td>
         <td>${(descuentoAplicado * 100).toFixed(0)}%</td>
         <td>${formatearPrecio(totalFinal)}</td>
@@ -158,9 +132,32 @@ document.getElementById('contratar').addEventListener('click', () => {
     email: document.getElementById('email').value,
   };
   localStorage.setItem('datosPropietario', JSON.stringify(datos));
+  Swal.fire("Sabemos que amás a tus mascotas.<br>uchas gracias por confiar en PETMED!");
 });
 
+function cargarDatosPropietario() {
+  const datosGuardados = JSON.parse(localStorage.getItem('datosPropietario'));
+  if (datosGuardados) {
+    document.getElementById('nombre').value = datosGuardados.nombre || '';
+    document.getElementById('apellido').value = datosGuardados.apellido || '';
+    document.getElementById('documento').value = datosGuardados.documento || '';
+    document.getElementById('domicilio').value = datosGuardados.domicilio || '';
+    document.getElementById('telefono').value = datosGuardados.telefono || '';
+    document.getElementById('email').value = datosGuardados.email || '';
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-  cargarTablaPrestaciones();
-  cargarTablaPlanes();
+  fetch('../db/data.json')
+    .then(response => response.json())
+    .then(data => {
+      prestaciones = data.prestaciones;
+      planes = data.planes;
+      cargarTablaPrestaciones();
+      cargarTablaPlanes();
+      cargarDatosPropietario();
+    })
+    .catch(error => {
+      console.error('Error al cargar los datos:', error);
+    });
 });

@@ -1,0 +1,49 @@
+{
+  "prestaciones": [
+    {
+      "plan": "Plan Pardo 🐻",
+      "consultas": "2",
+      "controles": "6",
+      "urgencias": "2",
+      "estudios": "2",
+      "internaciones": "1",
+      "descuentoMedicacion": "30%",
+      "descuentoArticulos": "10%"
+    },
+    {
+      "plan": "Plan Polar 🐻‍❄️",
+      "consultas": "4",
+      "controles": "12",
+      "urgencias": "4",
+      "estudios": "3",
+      "internaciones": "1",
+      "descuentoMedicacion": "30%",
+      "descuentoArticulos": "10%"
+    },
+    {
+      "plan": "Plan Panda 🐼",
+      "consultas": "Sin tope",
+      "controles": "Sin tope",
+      "urgencias": "Sin tope",
+      "estudios": "6",
+      "internaciones": "1",
+      "descuentoMedicacion": "30%",
+      "descuentoArticulos": "10%"
+    }
+  ],
+  
+  "planes": [
+    {
+      "plan": "Pardo 🐻",
+      "precio": 20000
+    },
+    {
+      "plan": "Polar 🐻‍❄️",
+      "precio": 30000
+    },
+    {
+      "plan": "Panda 🐼",
+      "precio": 40000
+    }
+  ]
+}
